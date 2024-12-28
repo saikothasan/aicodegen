@@ -9,12 +9,12 @@ interface ToolLayoutProps {
 export function ToolLayout({ children }: ToolLayoutProps) {
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-b from-[#1A237E] to-[#7B1FA2] py-20">
-        <div className="container mx-auto px-4">
+      <div className="min-h-screen bg-gradient-to-b from-[#1A237E] to-[#7B1FA2] flex items-center justify-center py-10">
+        <div className="container max-w-4xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-xl bg-white/10 p-8 backdrop-blur-lg"
+            className="rounded-xl bg-white/10 p-8 backdrop-blur-lg shadow-lg"
           >
             {children}
           </motion.div>
