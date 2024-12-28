@@ -1,53 +1,63 @@
-// Simulated AI processing functions
+import { api } from './api'; // Assuming API helper functions are in a shared module
+
 export const toolProcessors = {
-  'prompt-generator': async (input: string) => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    return `Generated prompt: "In the year 2150, ${input}..."`;
+  'prompt-generator': async (input: string): Promise<string> => {
+    const response = await api.get<string>(`/prompt/?prompt=${encodeURIComponent(input)}`);
+    return response;
   },
 
-  'vector-embedding': async (input: string) => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    return Array.from({ length: 5 }, () => Math.random()).join(', ');
+  'vector-embedding': async (input: string): Promise<string> => {
+    const response = await api.post<{ input: string; embeddings: number[] }>('/baai', {
+      input
+    });
+    return `Embeddings: ${response.embeddings.join(', ')}`;
   },
 
-  'speech-to-text': async (input: string) => {
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    return `Transcribed text: ${input}`;
+  'keyword-generator': async (input: string): Promise<string> => {
+    const response = await api.stream(`/keyword/?prompt=${encodeURIComponent(input)}`);
+    return response;
   },
 
-  'translation': async (input: string) => {
-    await new Promise(resolve => setTimeout(resolve, 800));
-    return `Translated text: ${input} (in Spanish)`;
+  'code-generator': async (input: string): Promise<string> => {
+    const response = await api.stream('/code', {
+      prompt: input
+    });
+    return response;
   },
 
-  'text-to-image': async (input: string) => {
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    return 'https://source.unsplash.com/random/800x600';
+  'article-generator': async (input: string): Promise<string> => {
+    const response = await api.stream('/ai', {
+      prompt: input
+    });
+    return response;
   },
 
-  'text-classification': async (input: string) => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    const categories = ['Positive', 'Negative', 'Neutral'];
-    return categories[Math.floor(Math.random() * categories.length)];
+  'image-classification': async (input: string): Promise<string> => {
+    const response = await api.get<string[]>(`/resnet/?imgurl=${encodeURIComponent(input)}`);
+    return `Classified objects: ${response.join(', ')}`;
   },
 
-  'image-classification': async (input: string) => {
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    return ['Object 1', 'Object 2', 'Object 3'];
+  'text-classification': async (input: string): Promise<string> => {
+    const response = await api.get<string>(`/classification/?textprompt=${encodeURIComponent(input)}`);
+    return `Classification result: ${response}`;
   },
 
-  'article-generator': async (input: string) => {
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    return `Generated article about ${input}...`;
+  'text-to-image': async (input: string): Promise<string> => {
+    const response = await api.get<string>(`/image/?imgprompt=${encodeURIComponent(input)}`);
+    return `Generated Image URL: ${response}`;
   },
 
-  'code-generator': async (input: string) => {
-    await new Promise(resolve => setTimeout(resolve, 1200));
-    return `// Generated code\nfunction example() {\n  console.log("${input}");\n}`;
+  'translation': async (input: string): Promise<string> => {
+    const response = await api.post<{ translated_text: string }>('/translate', {
+      text: input,
+      source_lang: 'en',
+      target_lang: 'es'
+    });
+    return `Translated text: ${response.translated_text}`;
   },
 
-  'keyword-generator': async (input: string) => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    return ['keyword1', 'keyword2', 'keyword3'];
+  'speech-to-text': async (input: string): Promise<string> => {
+    const response = await api.get<string>(`/whisper/?audio_url=${encodeURIComponent(input)}`);
+    return `Transcribed text: ${response}`;
   }
 };
