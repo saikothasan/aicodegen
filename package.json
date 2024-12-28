@@ -1,6 +1,7 @@
 {
   "name": "vite-react-typescript-starter",
   "private": true,
+  "proxy": "https://api.aicodegen.workers.dev",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
